@@ -12,9 +12,11 @@ const messageSchema = mongoose.Schema(
             ref: 'User'
         }],
         messages: [{
-            sender: String,
+            room:String,
+            author: String,
+            message: String,
             time: String,
-            message: String
+           
         }]
 
     },

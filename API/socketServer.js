@@ -1,7 +1,10 @@
+const userHelper = require("./helper/userHelper");
 
+userHelper
 
 const socketServer = (socket) => {
     console.log(`User Connected: ${socket.id}`);
+    console.log(socket.handshake.query.loggeduser)
 
     socket.on("join_room", (data) => {
         socket.join(data);
@@ -9,6 +12,10 @@ const socketServer = (socket) => {
     });
 
     socket.on("send_message", (data) => {
+        console.log(data)
+        userHelper.addChat(data).then(data=>{
+            console.log('message added to data base')
+        })
         socket.to(data.room).emit("receive_message", data);
     });
 

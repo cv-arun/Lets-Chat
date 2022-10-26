@@ -34,10 +34,11 @@ function Chat({ socket }) {
   const joinChat = (toid) => {
     const token = JSON.parse(localStorage.getItem('userKey'))
     axios.post('/getChat', { toid }, { headers: { 'x-access-token': token } }).then((response) => {
-      console.log(response.data.data._id)
-      setFriend(response.data.friend)
+      console.log(response.data.data.messages);
+      setFriend(response.data.friend);
       socket.emit("join_room", response.data.data._id);
-      setRoom(response.data.data._id)
+      setRoom(response.data.data._id);
+      setMessageList(response.data.data.messages)
     })
   }
 
@@ -76,7 +77,7 @@ function Chat({ socket }) {
     <>
       <Box sx={{ backgroundColor: 'grey', height: '100vh', display: 'flex', justifyContent: 'space-evenly' }}>
         {/* right part */}
-        <Stack direction="column" sx={{ width: '20vw', height: '90vh', marginTop: '5vh', backgroundColor: 'white', borderRadius: 3 }}>
+        <Stack direction="column" sx={{ width:`${friend.first_name?'20vw':'40vw'}`, height: '90vh', marginTop: '5vh', backgroundColor: 'white', borderRadius: 3,msOverflowStyle:'none' }}>
           <Stack sx={{ justifyContent: 'space-between', overflowX: 'scroll' }} direction='row'>
             <Typography variant='h4' sx={{ marginTop: 2, marginLeft: 2 }}>Chats</Typography>
             <Button sx={{ marginTop: 2 }} onClick={Logout}>Logout</Button>
@@ -97,6 +98,7 @@ function Chat({ socket }) {
           />
           <Stack direction='column' spacing={2} sx={{ marginTop: 2 }}>
             {user.map((curr) => {
+              console.log(curr.picture,curr.first_name)
               return <Box onClick={() => { joinChat(curr._id) }} sx={{ backgroundColor: 'whitesmoke', height: 70, display: 'flex'}}>
                 <img style={{ height: '100%', borderRadius: '50px', width: '' }} src={`${curr.picture}`} alt='profile ' />
                 <Typography variant='h6' sx={{ margin: 2, overflowX: 'hidden' }}>{curr.first_name}</Typography>
@@ -109,14 +111,14 @@ function Chat({ socket }) {
 
 
         {/* left part */}
-        <Stack direction='column' sx={{ width: '70vw', height: '90vh', marginTop: '5vh', backgroundColor: 'white', borderRadius: 3, justifyContent: 'space-between' }}>
+        {friend && friend.first_name && <Stack direction='column' sx={{ width: '70vw', height: '90vh', marginTop: '5vh', backgroundColor: 'white', borderRadius: 3, justifyContent: 'space-between' }}>
           <Box sx={{ backgroundColor: 'whitesmoke', height: 70, display: 'flex' }}>
             <img style={{ height: '100%', borderRadius: 3, width: '' }} src={`${friend.picture ? friend.picture : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3WEmfJCME77ZGymWrlJkXRv5bWg9QQmQEzw&usqp=CAU'}`} alt='profile ' />
             <Typography variant='h6' sx={{ margin: 2, overflowX: 'hidden' }}>{friend && friend.first_name}</Typography>
           </Box>
           <Stack direction='column-reverse' sx={{ backgroundColor: 'whitesmoke', height: '80%',overflowY:'scroll' }}>
             {messageList.map((curr) => {
-              return <Stack sx={{ backgroundColor: 'white', maxWidth: '50%', margin: 2, padding: 2,alignSelf:`${curr.author===myid?'flex-end':'flex-start'}` }}>
+              return <Stack  sx={{ backgroundColor: 'white', maxWidth: '50%', margin: 2, padding: 2,alignSelf:`${curr.author===myid?'flex-end':'flex-start'}` }}>
                 <Typography variant='body2' sx={{ overflowX: 'hidden', fontSize: '12px'}}>{curr.author}</Typography>
                 <Typography variant='body2' sx={{ overflowX: 'hidden', fontSize: '18px' }}>{curr.message}</Typography>
                 <Typography variant='body2' sx={{ overflowX: 'hidden', fontSize: '10px' }}>{curr.time}</Typography>
@@ -130,7 +132,7 @@ function Chat({ socket }) {
             <Button>Send</Button>
           </Stack>
 
-        </Stack>
+        </Stack>}
       </Box>
     </>
   )
