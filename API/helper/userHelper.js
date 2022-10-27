@@ -1,6 +1,8 @@
 
 const userModel = require('../model/userModel');
-const messageModel = require('../model/messageModel')
+const messageModel = require('../model/messageModel');
+const jwt = require('jsonwebtoken')
+
 module.exports = {
 
     getUsers: (myid) => {
@@ -37,7 +39,41 @@ module.exports = {
                     }
                 }
             }
-            ).then(data=>{
+            ).then(data => {
+                resolve(data)
+            }).catch(err => reject(err))
+        })
+    },
+    getUser: (myid) => {
+        return new Promise((resolve, reject) => {
+            userModel.findById(myid).then(data => {
+
+                let user = {
+                    name: data.first_name,
+                    id: data._id
+                }
+                resolve(user)
+
+            }).catch(err => reject(err))
+        })
+    },
+    registerOnline: (SocketId, token) => {
+       
+        return new Promise(async(resolve, reject) => {
+            let decode;
+            try{ decode=await jwt.verify(token, 'shhhhh')}
+            catch(err){
+                reject(err)
+            }
+            decode && userModel.findByIdAndUpdate(decode.userId,{isOnline:true,SocketId}).then(data=>{
+                resolve(data)
+            }).catch(err=>reject(err))
+
+        })
+    },
+    registerOffline:(SocketId)=>{
+        return new Promise((resolve,reject)=>{
+            userModel.findOneAndUpdate({SocketId},{isOnline:false}).then(data=>{
                 resolve(data)
             }).catch(err=>reject(err))
         })

@@ -40,14 +40,20 @@ module.exports = {
     updateUser:(req,res,next)=>{
         authhelper.doUpdateUser(req.body).then(response=>{
             res.json({msg:'user data updated'})
-        })
+        }).catch(err=>res.json(err))
     },
+    isLogedIn:(req,res,next)=>{
+        userHelper.getUser(req.userId).then(data=>{
+            res.json(data)
+        }).catch(err=>res.json(err))
+    }
+    ,
     getUsers:(req,res,next)=>{
         let myid=req.userId
      
         userHelper.getUsers(myid).then((data)=>{
             res.json({myid,users:data})
-        })
+        }).catch(err=>res.json(err))
 
     }
 }

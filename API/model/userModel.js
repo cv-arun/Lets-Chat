@@ -124,6 +124,8 @@ const userSchema = mongoose.Schema(
         },
       },
     ],
+    isOnline:Boolean,
+    SocketId:String
   },
   {
     timestamps: true,

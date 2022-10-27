@@ -11,6 +11,7 @@ router.post('/loginGoogle',auth.loginWithGoogle);
 router.post('/updateUser',auth.updateUser)
 router.get('/getUsers',verify,auth.getUsers)
 router.post('/getChat',verify,userController.getChat)
+router.get('/isLogedIn',verify,auth.isLogedIn)
 
 
 

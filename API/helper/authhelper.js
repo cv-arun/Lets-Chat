@@ -80,7 +80,8 @@ const authHelper = {
         return new Promise((resolve, reject) => {
 
         })
-    }
+    },
+    
 
 
 }
